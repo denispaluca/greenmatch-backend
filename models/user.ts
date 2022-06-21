@@ -24,4 +24,6 @@ const UserSchema = new mongoose.Schema({
 UserSchema.set("versionKey", false);
 
 // Export the User model
-module.exports = mongoose.model("User", UserSchema);
+const UserModel = mongoose.model("User", UserSchema);
+
+export default UserModel;
