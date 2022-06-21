@@ -10,13 +10,14 @@ import * as AuthService from '../services/auth';
 
 export const login = async (req: Request, res: Response) => {
   // check if the body of the request contains all necessary properties
-  if (!Object.prototype.hasOwnProperty.call(req.body, "password"))
+  const { username, password } = req.body;
+  if (!password)
     return res.status(400).json({
       error: "Bad Request",
       message: "The request body must contain a password property",
     });
 
-  if (!Object.prototype.hasOwnProperty.call(req.body, "username"))
+  if (!username)
     return res.status(400).json({
       error: "Bad Request",
       message: "The request body must contain a username property",
@@ -26,7 +27,7 @@ export const login = async (req: Request, res: Response) => {
   try {
     // if user is found and password is valid
     // create a token
-    const token = await AuthService.login(req.body.username, req.body.password);
+    const token = await AuthService.login(username, password);
     if (!token) {
       return res.status(401).json({
         error: "Unauthorized",
@@ -45,14 +46,14 @@ export const login = async (req: Request, res: Response) => {
 };
 
 export const register = async (req: Request, res: Response) => {
-  // check if the body of the request contains all necessary properties
-  if (!Object.prototype.hasOwnProperty.call(req.body, "password"))
+  const { username, password } = req.body;
+  if (!password)
     return res.status(400).json({
       error: "Bad Request",
       message: "The request body must contain a password property",
     });
 
-  if (!Object.prototype.hasOwnProperty.call(req.body, "username"))
+  if (!username)
     return res.status(400).json({
       error: "Bad Request",
       message: "The request body must contain a username property",
@@ -60,36 +61,10 @@ export const register = async (req: Request, res: Response) => {
 
   // handle the request
   try {
-    // hash the password before storing it in the database
-    const hashedPassword = bcrypt.hashSync(req.body.password, 8);
-
-    // create a user object
-    const user = {
-      username: req.body.username,
-      password: hashedPassword,
-      role: req.body.isAdmin ? "admin" : "member",
-    };
-
-    // create the user in the database
-    let retUser = await UserModel.create(user);
-
-    // if user is registered without errors
-    // create a token
-    const token = jwt.sign(
-      {
-        _id: retUser._id,
-        username: retUser.username,
-        role: retUser.role,
-      },
-      process.env.JWT_SECRET || "secret",
-      {
-        expiresIn: 86400, // expires in 24 hours
-      }
-    );
-
+    const token = await AuthService.register(username, password);
     // return generated token
     res.status(200).json({
-      token: token,
+      token,
     });
   } catch (err: any) {
     if (err.code == 11000) {
@@ -109,9 +84,7 @@ export const register = async (req: Request, res: Response) => {
 export const me = async (req: RequestWithUserId, res: Response) => {
   try {
     // get own user name from database
-    let user = await UserModel.findById(req.userId)
-      .select("username")
-      .exec();
+    let user = await UserModel.findById(req.userId);
 
     if (!user)
       return res.status(404).json({
