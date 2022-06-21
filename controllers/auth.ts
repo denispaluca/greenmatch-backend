@@ -6,6 +6,7 @@ import bcrypt from "bcrypt";
 import UserModel from "../models/user";
 import type { Request, Response } from 'express';
 import { RequestWithUserId } from "../types/auth";
+import * as AuthService from '../services/auth';
 
 export const login = async (req: Request, res: Response) => {
   // check if the body of the request contains all necessary properties
@@ -23,30 +24,17 @@ export const login = async (req: Request, res: Response) => {
 
   // handle the request
   try {
-    // get the user form the database
-    let user = await UserModel.findOne({
-      username: req.body.username,
-    }).exec();
-
-    // check if the password is valid
-    const isPasswordValid = bcrypt.compareSync(
-      req.body.password,
-      user.password
-    );
-    if (!isPasswordValid) return res.status(401).send({ token: null });
-
     // if user is found and password is valid
     // create a token
-    const token = jwt.sign(
-      { _id: user._id, username: user.username, role: user.role },
-      process.env.JwtSecret || "secret",
-      {
-        expiresIn: 86400, // expires in 24 hours
-      }
-    );
-
+    const token = await AuthService.login(req.body.username, req.body.password);
+    if (!token) {
+      return res.status(401).json({
+        error: "Unauthorized",
+        message: "Invalid username or password",
+      });
+    }
     return res.status(200).json({
-      token: token,
+      token,
     });
   } catch (err: any) {
     return res.status(404).json({
@@ -93,7 +81,7 @@ export const register = async (req: Request, res: Response) => {
         username: retUser.username,
         role: retUser.role,
       },
-      process.env.JwtSecret || "secret",
+      process.env.JWT_SECRET || "secret",
       {
         expiresIn: 86400, // expires in 24 hours
       }
