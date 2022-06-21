@@ -1,8 +1,4 @@
 "use strict";
-
-import jwt from "jsonwebtoken";
-import bcrypt from "bcrypt";
-
 import UserModel from "../models/user";
 import type { Request, Response } from 'express';
 import { RequestWithUserId } from "../types/auth";
