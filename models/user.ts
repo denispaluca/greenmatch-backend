@@ -1,5 +1,11 @@
 import * as mongoose from 'mongoose';
 
+interface User {
+  username: string;
+  password: string;
+  role: string;
+}
+
 // Define the user schema
 const UserSchema = new mongoose.Schema({
   username: {
@@ -24,6 +30,6 @@ const UserSchema = new mongoose.Schema({
 UserSchema.set("versionKey", false);
 
 // Export the User model
-const UserModel = mongoose.model("User", UserSchema);
+const UserModel = mongoose.model<User>("User", UserSchema);
 
 export default UserModel;

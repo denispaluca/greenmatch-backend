@@ -54,6 +54,12 @@ const checkIsAdmin = async (req: RequestWithUserId, res: Response, next: NextFun
     // checkAuthentication must be executed before this method
     // if not req.userId is not defined
     let user = await UserModel.findById(req.userId);
+    if (!user) {
+        return res.status(403).send({
+            error: "Forbidden",
+            message: "You have not the rights for this action.",
+        });
+    }
 
     if (user.role === "admin") {
         // if the user is an admin continue with the execution
