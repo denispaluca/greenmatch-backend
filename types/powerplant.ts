@@ -7,12 +7,12 @@ export enum EnergyType {
 
 export type PPADuration = 5 | 10 | 15;
 
-export interface PowerPlantCreation {
+export interface PowerPlantCreate {
   energyType: EnergyType;
   location: string;
 }
 
-export interface PowerPlant extends PowerPlantCreation {
+export interface PowerPlant extends PowerPlantCreate {
   supplierId: string;
   live?: boolean;
   capacity?: number;
