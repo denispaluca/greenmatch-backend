@@ -1,9 +1,10 @@
 import { RequestHandler } from "express";
 import * as PowerPlantService from '../services/powerplant';
 import * as BadRequest from '../errors/badRequest';
+import { PowerPlantCreate } from "../types/powerplant";
 
 export const create: RequestHandler = async (req, res) => {
-  const requiredProperties = ['location', 'energyType', 'name'];
+  const requiredProperties: (keyof PowerPlantCreate)[] = ['location', 'energyType', 'name'];
 
   for (const prop of requiredProperties)
     if (!req.body[prop]) return BadRequest.bodyPropertyMissing(res, prop);
@@ -76,6 +77,12 @@ export const update: RequestHandler = async (req, res) => {
   const update = req.body;
   try {
     const updatedPowerPlant = await PowerPlantService.update(id, (req as any).supplierId, update);
+    if (!updatedPowerPlant) {
+      return res.status(404).json({
+        error: "Powerplant Not Found",
+        message: "Power Plant doesn't exist",
+      });
+    }
 
     return res.status(200).json(updatedPowerPlant);
   } catch (err: any) {
@@ -91,7 +98,14 @@ export const update: RequestHandler = async (req, res) => {
 export const remove: RequestHandler = async (req, res) => {
   const { id } = req.params;
   try {
-    await PowerPlantService.remove(id, (req as any).supplierId);
+    const deletedPowerPlant = await PowerPlantService.remove(id, (req as any).supplierId);
+    if (!deletedPowerPlant) {
+      return res.status(404).json({
+        error: "Powerplant Not Found",
+        message: "Power Plant doesn't exist",
+      });
+    }
+    return res.status(204).send();
   } catch (err: any) {
     return res.status(404).json({
       error: "Powerplant Not Found",

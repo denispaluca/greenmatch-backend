@@ -1,13 +1,18 @@
-import express from "express";
+import express, { RequestHandler } from "express";
 import * as PowerPlantController from '../controllers/powerplant';
 
 const router = express.Router();
 
-router.get('/', PowerPlantController.list);
-router.post('/', PowerPlantController.create);
-router.get('/:id', PowerPlantController.get);
-router.patch('/:id', PowerPlantController.update);
-router.delete('/:id', PowerPlantController.remove);
+const mockMiddleWare: RequestHandler = (req, res, next) => {
+  (req as any).supplierId = '3';
+  next();
+}
+
+router.get('/', mockMiddleWare, PowerPlantController.list);
+router.post('/', mockMiddleWare, PowerPlantController.create);
+router.get('/:id', mockMiddleWare, PowerPlantController.get);
+router.patch('/:id', mockMiddleWare, PowerPlantController.update);
+router.delete('/:id', mockMiddleWare, PowerPlantController.remove);
 
 
 export default router;
