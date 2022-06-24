@@ -3,18 +3,25 @@ import { PowerPlant } from '../types/powerplant';
 
 // Define the user schema
 const PowerPlantSchema = new mongoose.Schema<PowerPlant>({
-  supplierId: {
+  name: {
     type: String,
     required: true
+  },
+  supplierId: {
+    type: String,
+    required: true,
+    immutable: true
   },
   energyType: {
     type: String,
     enum: ['wind', 'hydro', 'solar'],
-    required: true
+    required: true,
+    immutable: true
   },
   location: {
     type: String,
-    required: true
+    required: true,
+    immutable: true
   },
   live: Boolean,
   capacity: Number,

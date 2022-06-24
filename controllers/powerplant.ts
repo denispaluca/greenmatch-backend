@@ -20,7 +20,7 @@ export const create: RequestHandler = async (req, res) => {
       (req as any).supplierId
     );
 
-    res.status(201).json(newPowerPlant);
+    return res.status(201).json(newPowerPlant);
   } catch (err: any) {
     if (err?.code == 11000) {
       return res.status(400).json({
@@ -36,7 +36,7 @@ export const create: RequestHandler = async (req, res) => {
   }
 }
 
-const list: RequestHandler = async (req, res) => {
+export const list: RequestHandler = async (req, res) => {
   try {
     const powerplants = await PowerPlantService.list((req as any).supplierId);
     return res.status(200).json(powerplants);
@@ -48,7 +48,7 @@ const list: RequestHandler = async (req, res) => {
   }
 }
 
-const get: RequestHandler = async (req, res) => {
+export const get: RequestHandler = async (req, res) => {
   const { id } = req.params;
   if (!id) {
     return BadRequest.noRoute(res);
@@ -63,6 +63,35 @@ const get: RequestHandler = async (req, res) => {
     }
 
     res.status(200).json(powerplant);
+  } catch (err: any) {
+    return res.status(404).json({
+      error: "Powerplant Not Found",
+      message: err?.message,
+    });
+  }
+}
+
+export const update: RequestHandler = async (req, res) => {
+  const { id } = req.params;
+  const update = req.body;
+  try {
+    const updatedPowerPlant = await PowerPlantService.update(id, (req as any).supplierId, update);
+
+    return res.status(200).json(updatedPowerPlant);
+  } catch (err: any) {
+    return res.status(404).json({
+      error: "Powerplant Not Found",
+      message: err?.message,
+    });
+  }
+}
+
+
+
+export const remove: RequestHandler = async (req, res) => {
+  const { id } = req.params;
+  try {
+    await PowerPlantService.remove(id, (req as any).supplierId);
   } catch (err: any) {
     return res.status(404).json({
       error: "Powerplant Not Found",
