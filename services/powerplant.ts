@@ -1,11 +1,13 @@
 import PowerPlantModel from "../models/powerplant";
-import { PowerPlantCreate } from "../types/powerplant";
+import { PowerPlantCreate, PowerPlantUpdate } from "../types/powerplant";
 
 export const create = async (powerplant: PowerPlantCreate, supplierId: string) => {
+  const { location, energyType, name } = powerplant;
   return (await PowerPlantModel.create({
     supplierId,
-    location: powerplant.location,
-    energyType: powerplant.energyType
+    location,
+    energyType,
+    name
   })).toObject()
 }
 
@@ -16,5 +18,25 @@ export const list = (supplierId: string) => {
 }
 
 export const get = (id: string, supplierId: string) => {
-  return PowerPlantModel.findById(id).lean();
+  return PowerPlantModel.findOne({ _id: id, supplierId }).lean();
+}
+
+export const update = async (id: string, supplierId: string, update: PowerPlantUpdate) => {
+  const powerplant = await PowerPlantModel.findOneAndUpdate(
+    { _id: id, supplierId },
+    update,
+    {
+      new: true,
+      omitUndefined: true
+    }
+  ).lean();
+
+  return powerplant;
+}
+
+export const remove = (id: string, supplierId: string) => {
+  return PowerPlantModel.findOneAndDelete({
+    _id: id,
+    supplierId
+  });
 }

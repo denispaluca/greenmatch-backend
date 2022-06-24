@@ -13,10 +13,13 @@ export interface PowerPlantCreate {
   location: string;
 }
 
-export interface PowerPlant extends PowerPlantCreate {
-  supplierId: string;
+export interface PowerPlantUpdate {
   live?: boolean;
   capacity?: number;
   availableCapacity?: number;
   durations?: PPADuration[];
+}
+
+export interface PowerPlant extends PowerPlantCreate, PowerPlantUpdate {
+  supplierId: string;
 }
