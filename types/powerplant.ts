@@ -8,6 +8,7 @@ export enum EnergyType {
 export type PPADuration = 5 | 10 | 15;
 
 export interface PowerPlantCreate {
+  name: string;
   energyType: EnergyType;
   location: string;
 }

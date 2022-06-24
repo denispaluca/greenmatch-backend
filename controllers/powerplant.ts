@@ -1,27 +1,21 @@
 import { RequestHandler } from "express";
 import * as PowerPlantService from '../services/powerplant';
+import * as BadRequest from '../errors/badRequest';
 
 export const create: RequestHandler = async (req, res) => {
-  const { location, energyType } = req.body;
-  if (!location) {
-    return res.status(400).json({
-      error: "Bad Request",
-      message: "The request body must contain a location property",
-    });
-  }
+  const requiredProperties = ['location', 'energyType', 'name'];
 
-  if (!energyType) {
-    return res.status(400).json({
-      error: "Bad Request",
-      message: "The request body must contain an energy type property",
-    });
-  }
+  for (const prop of requiredProperties)
+    if (!req.body[prop]) return BadRequest.bodyPropertyMissing(res, prop);
 
+
+  const { location, energyType, name } = req.body;
   try {
     const newPowerPlant = await PowerPlantService.create(
       {
         location,
-        energyType
+        energyType,
+        name
       },
       (req as any).supplierId
     );
@@ -57,10 +51,7 @@ const list: RequestHandler = async (req, res) => {
 const get: RequestHandler = async (req, res) => {
   const { id } = req.params;
   if (!id) {
-    return res.status(400).json({
-      error: "Bad Request",
-      message: "The request parameters must contain an id property",
-    });
+    return BadRequest.noRoute(res);
   }
   try {
     const powerplant = await PowerPlantService.get(id, (req as any).supplierId);
