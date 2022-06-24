@@ -9,7 +9,8 @@ const PowerPlantSchema = new mongoose.Schema<PowerPlant>({
   },
   energyType: {
     type: String,
-    enum: ['wind', 'hydro', 'solar']
+    enum: ['wind', 'hydro', 'solar'],
+    required: true
   },
   location: {
     type: String,
@@ -24,6 +25,6 @@ const PowerPlantSchema = new mongoose.Schema<PowerPlant>({
 PowerPlantSchema.set("versionKey", false);
 
 // Export the User model
-const PowerPlantModel = mongoose.model("User", PowerPlantSchema);
+const PowerPlantModel = mongoose.model("PowerPlant", PowerPlantSchema);
 
 export default PowerPlantModel;
