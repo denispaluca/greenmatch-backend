@@ -26,7 +26,8 @@ const PowerPlantSchema = new mongoose.Schema<PowerPlant>({
   live: Boolean,
   capacity: Number,
   availableCapacity: Number,
-  durations: Array
+  durations: Array,
+  price: Number
 });
 
 PowerPlantSchema.set("versionKey", false);

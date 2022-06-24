@@ -14,12 +14,14 @@ export interface PowerPlantCreate {
 }
 
 export interface PowerPlantUpdate {
+  name?: string;
   live?: boolean;
   capacity?: number;
   availableCapacity?: number;
   durations?: PPADuration[];
+  price?: number;
 }
 
-export interface PowerPlant extends PowerPlantCreate, PowerPlantUpdate {
+export interface PowerPlant extends PowerPlantCreate, Omit<PowerPlantUpdate, 'name'> {
   supplierId: string;
 }
