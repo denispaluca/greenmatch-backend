@@ -6,7 +6,6 @@ const router = express.Router();
 
 router.get('/', OfferController.list);
 router.get('/:id', OfferController.get);
-router.patch('/:id', OfferController.buy);
 
 
 export default router;
