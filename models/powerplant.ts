@@ -23,11 +23,41 @@ const PowerPlantSchema = new mongoose.Schema<PowerPlant>({
     required: true,
     immutable: true
   },
-  live: Boolean,
-  capacity: Number,
-  availableCapacity: Number,
-  durations: Array,
-  price: Number
+  capacity: {
+    type: Number,
+    required: true,
+    default: 0,
+    min: 0,
+  },
+  availableCapacity: {
+    type: Number,
+    required: true,
+    default: 0,
+    min: 0
+  },
+  durations: {
+    type: {
+      five: Boolean,
+      ten: Boolean,
+      fifteen: Boolean
+    },
+    required: true,
+    default: {
+      five: false,
+      ten: false,
+      fifteen: false
+    }
+  },
+  price: {
+    type: Number,
+    required: true,
+    default: 0,
+    min: 0
+  },
+  live: {
+    type: Boolean,
+    default: false
+  },
 });
 
 PowerPlantSchema.set("versionKey", false);
