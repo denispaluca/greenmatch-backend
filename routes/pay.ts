@@ -3,9 +3,9 @@ const router = express.Router();
 
 import * as StripeController from "../controllers/stripe";
 
-//router.get("/payment-intent", StripeController.paymentIntent); // create payment intent
-router.get("/customer", StripeController.customer); // create customer
-//router.post("/payment-standard", StripeController.paymentStandard); // set as standard payment method
-router.get("/subscribe", StripeController.subscribe); // subscribe
+router.post("/customer", StripeController.createCustomer); // create customer on stripe
+router.post("/clientSecret", StripeController.clientSecret); // create setup intent and return client secret
+router.post("/subscribe", StripeController.subscribe); // create subscription with payment method from setup intent
+// TODO: route to create product
 
 export default router
