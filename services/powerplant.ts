@@ -76,6 +76,10 @@ export const update = async (id: string, supplierId: string, update: PowerPlantU
     powerplant.live = live;
   }
 
+  if (live === false) {
+    powerplant.live = false;
+  }
+
   return (await powerplant.save()).toObject();
 }
 
