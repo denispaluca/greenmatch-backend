@@ -93,16 +93,3 @@ export const get = async (id: string) => {
 
   return offer[0];
 }
-
-export const buy = async (id: string, supplierId: string, update: PowerPlantUpdate) => {
-  const powerplant = await PowerPlantModel.findOneAndUpdate(
-    { _id: id, supplierId },
-    update,
-    {
-      new: true,
-      omitUndefined: true
-    }
-  ).lean();
-
-  return powerplant;
-}

@@ -33,7 +33,3 @@ export const get: RequestHandler = async (req, res) => {
     })
   }
 }
-
-export const buy: RequestHandler = (req, res) => {
-
-}

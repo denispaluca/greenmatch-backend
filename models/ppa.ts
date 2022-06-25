@@ -1,35 +1,58 @@
-import * as mongoose from 'mongoose';
+import mongoose from 'mongoose';
+import { PPA } from '../types/ppa';
 
-interface User {
-  username: string;
-  password: string;
-  role: string;
-}
-
-// Define the user schema
-const UserSchema = new mongoose.Schema<User>({
-  username: {
+// Define the PPA schema
+const PPASchema = new mongoose.Schema<PPA>({
+  supplierId: {
     type: String,
     required: true,
-    unique: true
+    index: true,
+    immutable: true
   },
-  password: {
+  buyerId: {
     type: String,
-    required: true
+    required: true,
+    index: true,
+    immutable: true
   },
-  // role of the user, used for rights management
-  role: {
+  powerplantId: {
     type: String,
-    // role can only take the values "member" and "admin"
-    enum: ["member", "admin"],
-    // if not specified the role "member" is chosen
-    default: "member"
+    required: true,
+    index: true,
+    immutable: true
+  },
+  price: {
+    type: Number,
+    required: true,
+    min: 0,
+    immutable: true
+  },
+  amount: {
+    type: Number,
+    required: true,
+    min: 0,
+    immutable: true
+  },
+  startDate: {
+    type: Date,
+    required: true,
+    immutable: true
+  },
+  duration: {
+    type: Number,
+    enum: [5, 10, 15],
+    required: true,
+    immutable: true
+  },
+  canceled: {
+    type: Boolean,
+    default: false
   }
 });
 
-UserSchema.set("versionKey", false);
+PPASchema.set("versionKey", false);
 
-// Export the User model
-const UserModel = mongoose.model("User", UserSchema);
+// Export the PPA model
+const PPAModel = mongoose.model("PPA", PPASchema);
 
-export default UserModel;
+export default PPAModel;
