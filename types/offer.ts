@@ -1,9 +1,7 @@
 import { PowerPlant } from "./powerplant";
 
 
-export interface Offer extends Omit<PowerPlant, 'name'> {
+export interface Offer extends PowerPlant {
   supplierName: string;
   supplierWebsite: string;
-  powerplantId: string;
-  powerplantName: string;
 }
