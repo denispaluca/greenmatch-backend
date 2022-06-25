@@ -1,9 +1,9 @@
-import { PipelineStage } from "mongoose";
+import type { PipelineStage } from "mongoose";
+import mongoose from "mongoose";
 import PowerPlantModel from "../models/powerplant";
 import UserModel from "../models/user";
-import { Offer } from "../types/offer";
-import { PowerPlantUpdate } from "../types/powerplant";
-import mongoose from "mongoose";
+import type { Offer, OfferQuery } from "../types/offer";
+import { EnergyType, PowerPlantUpdate } from "../types/powerplant";
 
 const lookupPipeline: PipelineStage[] = [
   {
@@ -23,11 +23,61 @@ const lookupPipeline: PipelineStage[] = [
   { $project: { fromSupplier: 0 } }
 ]
 
-export const list = (supplierId: string) => {
+export const list = async (query: OfferQuery) => {
+  const { duration, energyTypes, availableCapacity, priceEnd, priceStart } = query;
+  const matchExtra: any = {};
 
-  return PowerPlantModel.find({
-    supplierId
-  }).lean();
+  if (energyTypes) {
+    const orClauses = []
+    if (energyTypes.wind) orClauses.push({ energyType: EnergyType.Wind });
+    if (energyTypes.hydro) orClauses.push({ energyType: EnergyType.Hydro });
+    if (energyTypes.solar) orClauses.push({ energyType: EnergyType.Solar });
+
+    if (orClauses.length > 0) matchExtra.$or = orClauses;
+  }
+
+  if (availableCapacity) {
+    matchExtra.availableCapacity = { $gte: availableCapacity }
+  }
+
+  const priceClause: any = {};
+  if (priceStart) {
+    priceClause.$gte = priceStart;
+  }
+
+  if (priceEnd) {
+    priceClause.$lte = priceEnd;
+  }
+
+  if (Object.keys(priceClause).length !== 0) {
+    matchExtra.price = priceClause;
+  }
+
+  switch (duration) {
+    case 5:
+      matchExtra["durations.five"] = true;
+      break;
+    case 10:
+      matchExtra["durations.ten"] = true;
+      break;
+    case 15:
+      matchExtra["durations.fifteen"] = true;
+      break;
+    default:
+      break;
+  }
+
+  const offers: Offer[] = await PowerPlantModel.aggregate([
+    {
+      $match: {
+        live: true,
+        ...matchExtra
+      }
+    },
+    ...lookupPipeline
+  ]);
+
+  return offers;
 }
 
 export const get = async (id: string) => {
@@ -40,6 +90,7 @@ export const get = async (id: string) => {
     },
     ...lookupPipeline
   ]);
+
   return offer[0];
 }
 
