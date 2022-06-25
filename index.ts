@@ -17,7 +17,7 @@ app.use('/api', apiRouter);
 app.listen(Number(PORT), () => {
   console.log(`⚡️[server]: Server is running at https://localhost:${PORT}`);
 
-  connect(String(DB_URI));
+  //connect(String(DB_URI));
 
 
 });
