@@ -6,10 +6,17 @@ import * as BadRequest from '../errors/badRequest';
 
 export const list: RequestHandler = async (req, res) => {
   const { powerplantId } = req.query;
+  const { supplierId, buyerId } = req as any;
+  if (!supplierId && !buyerId) {
+    return res.status(401).json({
+      error: 'Unauthorized',
+      message: 'No user loged in'
+    })
+  }
   try {
     const ppas = await PPAService.list({
-      supplierId: (req as any).supplierId,
-      buyerId: (req as any).buyerId,
+      supplierId,
+      buyerId,
       powerplantId: typeof powerplantId === 'string' ? powerplantId : undefined
     });
 

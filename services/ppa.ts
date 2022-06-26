@@ -3,19 +3,16 @@ import PPAModel from "../models/ppa"
 import { PPABuy, PPAQuery } from "../types/ppa"
 import { startOfNextMonth } from "../utils/time";
 
-export const list = ({ supplierId, buyerId, powerplantId }: PPAQuery) => {
-  return PPAModel.find({
-    supplierId,
-    buyerId,
-    powerplantId
-  }).lean();
+const removeUndefined = (q: PPAQuery) => JSON.parse(JSON.stringify(q)) as PPAQuery;
+
+export const list = (query: PPAQuery) => {
+  return PPAModel.find(removeUndefined(query)).lean();
 }
 
-export const get = (id: string, { supplierId, buyerId }: PPAQuery) => {
+export const get = (id: string, query: PPAQuery) => {
   return PPAModel.findOne({
     _id: id,
-    supplierId,
-    buyerId
+    ...removeUndefined(query)
   }).lean();
 }
 
