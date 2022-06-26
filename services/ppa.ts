@@ -1,6 +1,7 @@
 import PowerPlantModel from "../models/powerplant";
 import PPAModel from "../models/ppa"
 import { PPABuy, PPAQuery } from "../types/ppa"
+import { startOfNextMonth } from "../utils/time";
 
 export const list = ({ supplierId, buyerId, powerplantId }: PPAQuery) => {
   return PPAModel.find({
