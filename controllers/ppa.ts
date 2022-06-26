@@ -34,7 +34,7 @@ export const buy: RequestHandler = async (req, res) => {
   }
 
   if (!powerplantId) {
-    return BadRequest.bodyPropertyMissing(res, 'amount');
+    return BadRequest.bodyPropertyMissing(res, 'power plant id');
   }
 
   try {
