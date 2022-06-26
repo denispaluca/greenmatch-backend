@@ -35,9 +35,9 @@ export const cancel = (id: string, supplierId: string) => {
 }
 
 const durationMap = {
-  5: { 'duration.five': true },
-  10: { 'duration.ten': true },
-  15: { 'duration.fifteen': true }
+  5: { 'durations.five': true },
+  10: { 'durations.ten': true },
+  15: { 'durations.fifteen': true }
 }
 export const buy = async (buyerId: string, buyOrder: PPABuy) => {
   const { powerplantId, amount, duration } = buyOrder;
@@ -51,7 +51,7 @@ export const buy = async (buyerId: string, buyOrder: PPABuy) => {
       ...durationMap[duration]
     },
     {
-      $inc: { availableCapacity: amount }
+      $inc: { availableCapacity: -amount }
     },
     {
       new: true
