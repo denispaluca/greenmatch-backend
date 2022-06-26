@@ -33,13 +33,22 @@ export const cancel = (id: string, supplierId: string) => {
     }
   ).lean();
 }
+
+const durationMap = {
+  5: { 'duration.five': true },
+  10: { 'duration.ten': true },
+  15: { 'duration.fifteen': true }
+}
 export const buy = async (buyerId: string, buyOrder: PPABuy) => {
-  const { powerplantId, amount } = buyOrder;
+  const { powerplantId, amount, duration } = buyOrder;
+
+
   const powerplant = await PowerPlantModel.findOneAndUpdate(
     {
       _id: powerplantId,
       live: true,
-      availableCapacity: { $gte: amount }
+      availableCapacity: { $gte: amount },
+      ...durationMap[duration]
     },
     {
       $inc: { availableCapacity: amount }
