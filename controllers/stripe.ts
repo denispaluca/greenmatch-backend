@@ -3,6 +3,19 @@ import type { Request, Response } from 'express';
 const stripe = require('stripe')('sk_test_51LDTGtLY3fwx8Mq4A840X9p9iAHTomTWfygNJauif6MY7kCZRtXFtSyFvKXtglFYfw6vqmq2RoqmiIPFrx3Wzg7v00pQymjPfD');
 
 export const createCustomer = async (req: Request, res: Response) => {
+    // check if the body of the request contains all necessary properties
+    const { email, name } = req.body;
+    if (!email)
+        return res.status(400).json({
+            error: "Bad Request",
+            message: "The request body must contain an email property",
+        });
+    if (!name)
+        return res.status(400).json({
+            error: "Bad Request",
+            message: "The request body must contain an name property",
+        });
+
     const customer = await stripe.customers.create({
         'email': req.body.email,
         'name': req.body.name,
@@ -16,6 +29,14 @@ export const createCustomer = async (req: Request, res: Response) => {
 * Later, you can use PaymentIntents to drive the payment flow. 
 */
 export const setupIntent = async (req: Request, res: Response) => {
+    // check if the body of the request contains all necessary properties
+    const { customer } = req.body;
+    if (!customer)
+        return res.status(400).json({
+            error: "Bad Request",
+            message: "The request body must contain a customer property",
+        });
+
     const setupIntent = await stripe.setupIntents.create({
         payment_method_types: ['sepa_debit'],
         customer: req.body.customer,
@@ -49,6 +70,20 @@ export const subscribe = async (req: Request, res: Response) => {
 * unit_amount: monthly amount in cents
 */
 export const ppa = async (req: Request, res: Response) => {
+    // check if the body of the request contains all necessary properties
+    const { name, unit_amount } = req.body;
+    if (!name)
+        return res.status(400).json({
+            error: "Bad Request",
+            message: "The request body must contain a name property",
+        });
+
+    if (!unit_amount)
+        return res.status(400).json({
+            error: "Bad Request",
+            message: "The request body must contain a unit_amount property",
+        });
+
     // create product
     const product = await stripe.products.create({
         name: req.body.name,
