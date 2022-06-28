@@ -3,22 +3,24 @@ import * as PPAService from '../services/ppa';
 import { PPA } from "../types/ppa";
 import { parseSingleDuration } from "../utils/duration";
 import * as BadRequest from '../errors/badRequest';
+import { RequestWithUserId } from "../types/auth";
 
-export const list: RequestHandler = async (req, res) => {
+export const list: RequestHandler = async (req: RequestWithUserId, res) => {
   const { powerplantId } = req.query;
-  const { supplierId, buyerId } = req as any;
-  if (!supplierId && !buyerId) {
+  const { userId, role } = req;
+  if (!userId || !role) {
     return res.status(401).json({
       error: 'Unauthorized',
       message: 'No user loged in'
     })
   }
+
   try {
-    const ppas = await PPAService.list({
-      supplierId,
-      buyerId,
-      powerplantId: typeof powerplantId === 'string' ? powerplantId : undefined
-    });
+    const ppas = await PPAService.list(
+      userId,
+      role,
+      typeof powerplantId === 'string' ? powerplantId : undefined
+    );
 
     return res.status(200).json(ppas);
   } catch (err: any) {
@@ -29,7 +31,23 @@ export const list: RequestHandler = async (req, res) => {
   }
 }
 
-export const buy: RequestHandler = async (req, res) => {
+export const buy: RequestHandler = async (req: RequestWithUserId, res) => {
+  const { userId, role } = req;
+  if (!userId) {
+    return res.status(401).json({
+      error: 'Unauthorized',
+      message: 'No user loged in'
+    })
+  }
+
+
+  if (role !== 'buyer') {
+    return res.status(401).json({
+      error: 'Unauthorized',
+      message: 'User is not a buyer'
+    })
+  }
+
   const { powerplantId, duration, amount } = req.body;
   const dur = parseSingleDuration(duration);
   if (!dur) {
@@ -45,7 +63,7 @@ export const buy: RequestHandler = async (req, res) => {
   }
 
   try {
-    const ppa = await PPAService.buy((req as any).buyerId, req.body);
+    const ppa = await PPAService.buy(userId, req.body);
     return res.status(201).json(ppa);
   } catch (err: any) {
     return res.status(500).json({
@@ -55,20 +73,18 @@ export const buy: RequestHandler = async (req, res) => {
   }
 }
 
-export const get: RequestHandler = async (req, res) => {
+export const get: RequestHandler = async (req: RequestWithUserId, res) => {
+  const { userId, role } = req;
+  if (!userId || !role) {
+    return res.status(401).json({
+      error: 'Unauthorized',
+      message: 'No user loged in'
+    })
+  }
+
   const { id } = req.params;
-  const { supplierId, buyerId } = (req as any);
   try {
-    let ppa: PPA | null = supplierId ? await PPAService.get(id, {
-      supplierId,
-    }) : null;
-
-    if (!ppa && buyerId) {
-      ppa = await PPAService.get(id, {
-        buyerId,
-      })
-    }
-
+    let ppa = await PPAService.get(id, userId, role);
     if (!ppa) {
       res.status(404).json({
         error: 'Not Found',
@@ -83,12 +99,18 @@ export const get: RequestHandler = async (req, res) => {
       message: err?.message
     })
   }
-
 }
 
-export const cancel: RequestHandler = async (req, res) => {
+export const cancel: RequestHandler = async (req: RequestWithUserId, res) => {
+  if (!req.userId) {
+    return res.status(401).json({
+      error: 'Unauthorized',
+      message: 'No user loged in'
+    })
+  }
+
   try {
-    await PPAService.cancel(req.params.id, (req as any).supplierId);
+    await PPAService.cancel(req.params.id, req.userId);
   } catch (err: any) {
     return res.status(500).json({
       error: 'Internal Server Error',
