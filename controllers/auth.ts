@@ -43,7 +43,6 @@ export const login = async (req: Request, res: Response) => {
 
 export const register = async (req: Request, res: Response) => {
   const { username, password } = req.body;
-  console.log("uname, pw", username, password)
   if (!password)
     return res.status(400).json({
       error: "Bad Request",
