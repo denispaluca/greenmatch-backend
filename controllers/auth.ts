@@ -131,7 +131,3 @@ export const me = async (req: RequestWithUserId, res: Response) => {
 export const logout = (req: RequestWithUserId, res: Response) => {
   res.status(200).send({ token: null });
 };
-
-export const test = (req: Request, res: Response) => {
-  res.status(200).send({ message: "test" });
-}
