@@ -9,6 +9,4 @@ router.post("/register", AuthController.register); // register a new user
 router.get("/me", AuthMiddleware.checkAuthentication, AuthController.me); // get own username, requires a logged in user
 router.get("/logout", AuthMiddleware.checkAuthentication, AuthController.logout); // logout user
 
-router.get('/test', AuthController.test);
-
 export default router;
