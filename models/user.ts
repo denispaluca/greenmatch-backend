@@ -24,9 +24,9 @@ const UserSchema = new mongoose.Schema<User>({
   role: {
     type: String,
     // role can only take the values "member" and "admin"
-    enum: ["supplier", "consumer"],
+    enum: ["supplier", "buyer"],
     // if not specified the role "member" is chosen
-    default: "member"
+    default: "supplier"
   },
   iban: {
     type: String,
