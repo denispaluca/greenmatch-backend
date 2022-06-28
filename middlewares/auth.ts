@@ -27,6 +27,7 @@ export const checkAuthentication = (req: RequestWithUserId, res: Response, next:
 
         // if everything is good, save to request for use in other routes
         if (typeof decoded === "object") {
+            req.role = decoded.role;
             req.userId = decoded._id;
         }
         next();

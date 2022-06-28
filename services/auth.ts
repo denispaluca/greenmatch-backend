@@ -1,21 +1,27 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import UserModel from "../models/user";
+import {Company} from "../types/auth";
 
-export const login = async (username: string, password: string): Promise<string | null> => {
+export const login = async (username: string, 
+  password: string, 
+  loginType: string): Promise<string | null> => {
   // get the user form the database
   let user = await UserModel.findOne({
-    username
+    username,
   });
 
   if (!user) return null;
+
+  // check if the loginType is valid
+  if(user.role.toLowerCase() !== loginType.toLowerCase()) return null;
 
   // check if the password is valid
   const isPasswordValid = bcrypt.compareSync(
     password,
     user.password
   );
-  if (!isPasswordValid) return null;
+    if (!isPasswordValid) return null;
 
 
   const token = jwt.sign(
@@ -29,14 +35,22 @@ export const login = async (username: string, password: string): Promise<string 
   return token;
 }
 
-export const register = async (username: string, password: string): Promise<string | null> => {
+export const register = async (
+  username: string, 
+  password: string, 
+  iban: string,
+  company: Company, 
+  ): Promise<string | null> => {
   // hash the password before storing it in the database
   const hashedPassword = bcrypt.hashSync(password, 8);
 
   // create a user object
   const user = {
     username: username,
-    password: hashedPassword
+    password: hashedPassword,
+    role: "supplier",
+    company: company,
+    iban: iban,
   };
 
   // create the user in the database
