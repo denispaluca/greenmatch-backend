@@ -5,14 +5,31 @@ import { startOfNextMonth } from "../utils/time";
 
 const removeUndefined = (q: PPAQuery) => JSON.parse(JSON.stringify(q)) as PPAQuery;
 
-export const list = (query: PPAQuery) => {
-  return PPAModel.find(removeUndefined(query)).lean();
+export const list = (userId: string, role: 'supplier' | 'buyer', powerplantId?: string) => {
+  const query: PPAQuery = {}
+  if (role === 'supplier') {
+    query.supplierId = userId;
+  } else {
+    query.buyerId = userId;
+  };
+
+  if (powerplantId) {
+    query.powerplantId = powerplantId;
+  }
+
+  return PPAModel.find(query).lean();
 }
 
-export const get = (id: string, query: PPAQuery) => {
+export const get = (id: string, userId: string, role: 'supplier' | 'buyer') => {
+  const query: PPAQuery = {}
+  if (role === 'supplier') {
+    query.supplierId = userId;
+  } else {
+    query.buyerId = userId;
+  };
   return PPAModel.findOne({
     _id: id,
-    ...removeUndefined(query)
+    ...query
   }).lean();
 }
 
