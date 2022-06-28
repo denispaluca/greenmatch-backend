@@ -48,7 +48,7 @@ export const setupIntent = async (req: Request, res: Response) => {
 * items: the price id of the purchased ppa
 * cancel_at: unix timestamp when the subscription should stop
 * billing_cycle_anchor: unix timestamp when the subscription should start
-* proportion_behavior: do not proportionally charge the customer before the billing cycle starts
+* proration_behavior: do not proportionally charge the customer before the billing cycle starts
 */
 export const subscribe = async (req: Request, res: Response) => {
     const subscription = await stripe.subscriptions.create({
@@ -61,7 +61,6 @@ export const subscribe = async (req: Request, res: Response) => {
         proration_behavior: 'none',
         default_payment_method: req.body.default_payment_method,
     });
-    console.log('Subscription successfully set up!');
     res.send(subscription);
 };
 
