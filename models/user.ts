@@ -1,9 +1,12 @@
 import * as mongoose from 'mongoose';
+import {Company} from '../types/auth';
 
 interface User {
   username: string;
   password: string;
   role: string;
+  iban: string;
+  company: Company;
 }
 
 // Define the user schema
@@ -21,10 +24,38 @@ const UserSchema = new mongoose.Schema<User>({
   role: {
     type: String,
     // role can only take the values "member" and "admin"
-    enum: ["member", "admin"],
+    enum: ["supplier", "buyer"],
     // if not specified the role "member" is chosen
-    default: "member"
-  }
+    default: "supplier"
+  },
+  iban: {
+    type: String,
+    required: true,
+    unique: true
+  },
+  company: new mongoose.Schema<Company>({
+    country: {
+      type: String,
+      required: true,
+    },
+    name: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    website: {
+      type: String,
+      required: true,
+    },
+    hrb: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    imageURL: {
+      type: String,
+    },
+  }),
 });
 
 UserSchema.set("versionKey", false);
