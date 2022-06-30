@@ -78,10 +78,6 @@ export const register = async (req: Request, res: Response) => {
     hrb: companyHrb } = company;
 
   console.log(company);
-  console.log(companyName);
-  console.log(companyCountry);
-  console.log(companyWebsite);
-  console.log(companyHrb);
 
   if(!companyName || !companyCountry || !companyWebsite || !companyHrb){
     return res.status(400).json({
