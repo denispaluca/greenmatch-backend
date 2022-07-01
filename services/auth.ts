@@ -48,7 +48,7 @@ export const register = async (
   const user = {
     username: username,
     password: hashedPassword,
-    role: "buyer",
+    role: "supplier",
     company: company,
     iban: iban,
   };

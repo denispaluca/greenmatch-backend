@@ -1,3 +1,4 @@
+import UserModel from "../models/user";
 import { mailConfigurations } from "../types/mailer";
 
 const nodemailer = require("nodemailer");
@@ -29,11 +30,19 @@ export const sendMail = async (mailData: mailConfigurations) => {
 };
 
 export const sendPpaAcknowledgement = async (
-  dstMailAdress: string,
+  buyerId: string,
   powerPlantName: string
 ) => {
+
+    // resolve mailadress from buyerid
+    const buyer = await UserModel.findOne({"_id": buyerId}).lean()
+
+    if (!buyer){
+        return "Could not send E-mail because of missing E-Mail"
+    }
+
   const ackMail: mailConfigurations = {
-    to: dstMailAdress,
+    to: buyer.username,
     subject: `GreenMatch - Successfully PPA Conclusion with ${powerPlantName}`,
     html:
       `<center> <h2>Congratulations!</h2><img src="cid:checkmark" style="width:48px;height:48px;" alt="Checkmark"><h5> You have successfully concluded a PPA with ${powerPlantName}</h5>` +
@@ -46,7 +55,5 @@ export const sendPpaAcknowledgement = async (
       },
     ],
   };
-
-  console.log("Dirname", __dirname);
   await sendMail(ackMail);
 };
