@@ -89,6 +89,6 @@ export const buy = async (buyerId: string, buyOrder: PPABuy) => {
     startDate: startOfNextMonth(),
   });
 
-  MailService.sendPpaAcknowledgement(buyerId, powerplant.name);
+  MailService.sendPpaAcknowledgement(buyerId, powerplant, buyOrder);
   return ppa.toObject();
 };
