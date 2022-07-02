@@ -2,6 +2,7 @@ import PowerPlantModel from "../models/powerplant";
 import PPAModel from "../models/ppa"
 import { PPABuy, PPAQuery } from "../types/ppa"
 import { startOfNextMonth } from "../utils/time";
+import { subscribe } from "../services/stripe";
 import dotenv from 'dotenv';
 
 // load stripe
@@ -91,16 +92,17 @@ export const buy = async (buyerId: string, buyOrder: PPABuy) => {
     product: product.id,
   });
 
-  // create subscription
-
   const ppa = await PPAModel.create({
     buyerId,
     ...buyOrder,
     supplierId: powerplant.supplierId,
     price: powerplant.price,
     startDate: startOfNextMonth(),
-    stripePriceId: price.id
+    stripePriceId: price.id,
   });
+
+  // create subscription
+  subscribe(ppa);
 
   return ppa.toObject();
 }

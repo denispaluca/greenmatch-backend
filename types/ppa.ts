@@ -10,6 +10,7 @@ export interface PPABuy {
   powerplantId: string;
   duration: SingleDuration;
   amount: number;
+  stripePaymentMethod: string;
 }
 
 /**
