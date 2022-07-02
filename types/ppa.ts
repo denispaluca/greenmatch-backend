@@ -19,4 +19,5 @@ export interface PPA extends Required<PPAQuery>, PPABuy {
   price: number;
   startDate: Date;
   canceled: boolean;
+  stripePriceId: string;
 }

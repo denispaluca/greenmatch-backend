@@ -1,5 +1,5 @@
 import * as mongoose from 'mongoose';
-import {Company} from '../types/auth';
+import { Company } from '../types/auth';
 
 interface User {
   username: string;
@@ -7,6 +7,7 @@ interface User {
   role: string;
   iban: string;
   company: Company;
+  stripeCustId: string;
 }
 
 // Define the user schema
@@ -56,6 +57,7 @@ const UserSchema = new mongoose.Schema<User>({
       type: String,
     },
   }),
+  stripeCustId: String,
 });
 
 UserSchema.set("versionKey", false);

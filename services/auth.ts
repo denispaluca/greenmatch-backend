@@ -1,10 +1,15 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import UserModel from "../models/user";
-import {Company} from "../types/auth";
+import { Company } from "../types/auth";
+import dotenv from 'dotenv';
 
-export const login = async (username: string, 
-  password: string, 
+// load stripe
+dotenv.config();
+const stripe = require('stripe')(process.env.STRIPE_SK);
+
+export const login = async (username: string,
+  password: string,
   loginType: string): Promise<string | null> => {
   // get the user form the database
   let user = await UserModel.findOne({
@@ -14,14 +19,14 @@ export const login = async (username: string,
   if (!user) return null;
 
   // check if the loginType is valid
-  if(user.role.toLowerCase() !== loginType.toLowerCase()) return null;
+  if (user.role.toLowerCase() !== loginType.toLowerCase()) return null;
 
   // check if the password is valid
   const isPasswordValid = bcrypt.compareSync(
     password,
     user.password
   );
-    if (!isPasswordValid) return null;
+  if (!isPasswordValid) return null;
 
 
   const token = jwt.sign(
@@ -36,21 +41,28 @@ export const login = async (username: string,
 }
 
 export const register = async (
-  username: string, 
-  password: string, 
+  username: string,
+  password: string,
   iban: string,
-  company: Company, 
-  ): Promise<string | null> => {
+  company: Company,
+): Promise<string | null> => {
   // hash the password before storing it in the database
   const hashedPassword = bcrypt.hashSync(password, 8);
+
+  // stripe: create customer
+  const customer = await stripe.customers.create({
+    'email': username,
+    'name': company.name,
+  });
 
   // create a user object
   const user = {
     username: username,
     password: hashedPassword,
-    role: "supplier",
+    role: "buyer",
     company: company,
     iban: iban,
+    stripeCustId: customer.id
   };
 
   // create the user in the database
@@ -62,7 +74,7 @@ export const register = async (
     {
       _id: retUser._id,
       username: retUser.username,
-      role: retUser.role,
+      role: "buyer",
     },
     process.env.JWT_SECRET || "secret",
     {
