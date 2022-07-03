@@ -18,7 +18,7 @@ export const subscribe = async (ppa: any) => {
     const anchorUnix: string = String(ppa.startDate.getTime() / 1000);
     const cancelAtUnix: string = String(getEndDate(ppa.duration).getTime() / 1000);
 
-    const subscription = await stripe.subscriptions.create({
+    await stripe.subscriptions.create({
         customer: buyer!.stripeCustId,
         items: [{ price: ppa.stripePriceId }],
         payment_behavior: 'default_incomplete',

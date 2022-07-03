@@ -101,7 +101,7 @@ export const buy = async (buyerId: string, buyOrder: PPABuy) => {
     stripePriceId: price.id,
   });
 
-  // create subscription
+  // stripe: create subscription
   subscribe(ppa);
 
   return ppa.toObject();
