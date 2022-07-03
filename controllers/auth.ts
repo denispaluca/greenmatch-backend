@@ -3,6 +3,11 @@ import UserModel from "../models/user";
 import type { Request, Response } from 'express';
 import { RequestWithUserId } from "../types/auth";
 import * as AuthService from '../services/auth';
+import dotenv from 'dotenv';
+
+// load stripe
+dotenv.config();
+const stripe = require('stripe')(process.env.STRIPE_SK);
 
 export const login = async (req: Request, res: Response) => {
   // check if the body of the request contains all necessary properties
@@ -19,7 +24,7 @@ export const login = async (req: Request, res: Response) => {
       message: "The request body must contain a username property",
     });
 
-  if(!loginType)
+  if (!loginType)
     return res.status(400).json({
       error: "Bad Request",
       message: "The request body must contain a loginType property",
@@ -48,10 +53,10 @@ export const login = async (req: Request, res: Response) => {
 };
 
 export const register = async (req: Request, res: Response) => {
-  const { 
-    username, 
-    password, 
-    iban, 
+  const {
+    username,
+    password,
+    iban,
     company,
   } = req.body;
   if (!password)
@@ -66,20 +71,20 @@ export const register = async (req: Request, res: Response) => {
       message: "The request body must contain a username property",
     });
 
-  if(!iban)
+  if (!iban)
     return res.status(400).json({
       error: "Bad Request",
       message: "The request body must contain an iban property",
     });
 
-  const { name: companyName, 
-    country: companyCountry, 
-    website: companyWebsite, 
+  const { name: companyName,
+    country: companyCountry,
+    website: companyWebsite,
     hrb: companyHrb } = company;
 
   console.log(company);
 
-  if(!companyName || !companyCountry || !companyWebsite || !companyHrb){
+  if (!companyName || !companyCountry || !companyWebsite || !companyHrb) {
     return res.status(400).json({
       error: "Bad Request",
       message: "The request body must contain all company properties",
@@ -120,6 +125,30 @@ export const me = async (req: RequestWithUserId, res: Response) => {
       });
 
     return res.status(200).json(user);
+  } catch (err: any) {
+    return res.status(500).json({
+      error: "Internal Server Error",
+      message: err.message,
+    });
+  }
+};
+
+export const setupIntent = async (req: RequestWithUserId, res: Response) => {
+  try {
+    // get own user name from database
+    let user = await UserModel.findById(req.userId);
+
+    if (!user)
+      return res.status(404).json({
+        error: "Not Found",
+        message: `User not found`,
+      });
+
+    const setupIntent = await stripe.setupIntents.create({
+      payment_method_types: ['sepa_debit'],
+      customer: user.stripeCustId,
+    });
+    return res.status(200).json(setupIntent);
   } catch (err: any) {
     return res.status(500).json({
       error: "Internal Server Error",
