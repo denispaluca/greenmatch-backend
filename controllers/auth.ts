@@ -36,9 +36,13 @@ export const login = async (req: Request, res: Response) => {
         message: "Invalid username or password",
       });
     }
-    return res.status(200).json({
-      token,
-    });
+    return res.status(200).cookie('token', token, {
+      httpOnly: true,
+      maxAge: 1000 * 60 * 60 * 24,
+      path: '/',
+      sameSite: 'strict',
+    }).send("Successfull login.")
+
   } catch (err: any) {
     return res.status(404).json({
       error: "User Not Found",
@@ -90,9 +94,12 @@ export const register = async (req: Request, res: Response) => {
   try {
     const token = await AuthService.register(username, password, iban, company);
     // return generated token
-    res.status(200).json({
-      token,
-    });
+    return res.status(200).cookie('token', token, {
+      httpOnly: true,
+      maxAge: 1000 * 60 * 60 * 24,
+      path: '/',
+      sameSite: 'strict',
+    }).send("Successfull registration.")
   } catch (err: any) {
     if (err.code == 11000) {
       return res.status(400).json({
@@ -128,6 +135,6 @@ export const me = async (req: RequestWithUserId, res: Response) => {
   }
 };
 
-export const logout = (req: RequestWithUserId, res: Response) => {
-  res.status(200).send({ token: null });
+export const logout = (req: Request, res: Response) => {
+  return res.clearCookie('token').status(200).send("Successfull logout.")
 };
