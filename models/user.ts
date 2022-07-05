@@ -2,7 +2,7 @@ import * as mongoose from 'mongoose';
 import { Company } from '../types/auth';
 
 interface User {
-  username: string;
+  email: string;
   password: string;
   role: string;
   iban: string;
@@ -12,7 +12,7 @@ interface User {
 
 // Define the user schema
 const UserSchema = new mongoose.Schema<User>({
-  username: {
+  email: {
     type: String,
     required: true,
     unique: true

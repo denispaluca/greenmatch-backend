@@ -8,12 +8,12 @@ import dotenv from 'dotenv';
 dotenv.config();
 const stripe = require('stripe')(process.env.STRIPE_SK);
 
-export const login = async (username: string,
+export const login = async (email: string,
   password: string,
   loginType: string): Promise<string | null> => {
   // get the user form the database
   let user = await UserModel.findOne({
-    username,
+    email,
   });
 
   if (!user) return null;
@@ -30,7 +30,7 @@ export const login = async (username: string,
 
 
   const token = jwt.sign(
-    { _id: user._id, username: user.username, role: user.role },
+    { _id: user._id, username: user.email, role: user.role },
     process.env.JWT_SECRET || "secret",
     {
       expiresIn: 86400, // expires in 24 hours
@@ -41,7 +41,7 @@ export const login = async (username: string,
 }
 
 export const register = async (
-  username: string,
+  email: string,
   password: string,
   iban: string,
   company: Company,
@@ -51,13 +51,13 @@ export const register = async (
 
   // stripe: create customer
   const customer = await stripe.customers.create({
-    'email': username,
+    'email': email,
     'name': company.name,
   });
 
   // create a user object
   const user = {
-    username: username,
+    email: email,
     password: hashedPassword,
     role: "buyer",
     company: company,
@@ -73,8 +73,8 @@ export const register = async (
   const token = jwt.sign(
     {
       _id: retUser._id,
-      username: retUser.username,
-      role: "buyer",
+      username: retUser.email,
+      role: retUser.role,
     },
     process.env.JWT_SECRET || "secret",
     {
