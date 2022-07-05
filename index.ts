@@ -11,7 +11,7 @@ const { PORT, DB_URI } = process.env;
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(cors({ origin: '*' }));
+app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
 app.use('/api', apiRouter);
 
 app.listen(Number(PORT), () => {
@@ -21,3 +21,5 @@ app.listen(Number(PORT), () => {
 
 
 });
+
+export {app}
