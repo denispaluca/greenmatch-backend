@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 import PowerPlantModel from "../models/powerplant";
 import UserModel from "../models/user";
 import type { Offer, OfferQuery } from "../types/offer";
-import { EnergyType, PowerPlantUpdate } from "../types/powerplant";
+import { EnergyType } from "../types/powerplant";
 
 const lookupPipeline: PipelineStage[] = [
   {
@@ -13,7 +13,13 @@ const lookupPipeline: PipelineStage[] = [
       let: { "searchId": { $toObjectId: "$supplierId" } },
       pipeline: [
         { $match: { "$expr": [{ "_id": "$$searchId" }] } },
-        { $project: { supplierName: '$username', supplierWebsite: '$website' } }
+        {
+          $project: {
+            supplierName: '$company.name',
+            supplierWebsite: '$company.website',
+            supplierImageUrl: '$company.imageUrl'
+          }
+        }
       ]
     }
   },

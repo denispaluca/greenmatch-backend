@@ -34,7 +34,7 @@ export const update = async (id: string, supplierId: string, update: PowerPlantU
     powerplant.name = name;
   }
 
-  if (price) {
+  if (price || price === 0) {
     if (price < 0) {
       throw new Error("Price cannot be negative");
     }
