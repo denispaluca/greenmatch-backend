@@ -4,16 +4,9 @@ import { PPABuy, PPAQuery } from "../types/ppa";
 import { startOfNextMonth } from "../utils/time";
 import * as MailService from "../services/mailer";
 
-const removeUndefined = (q: PPAQuery) =>
-  JSON.parse(JSON.stringify(q)) as PPAQuery;
-
-export const list = (
-  userId: string,
-  role: "supplier" | "buyer",
-  powerplantId?: string
-) => {
-  const query: PPAQuery = {};
-  if (role === "supplier") {
+export const list = (userId: string, role: 'supplier' | 'buyer', powerplantId?: string) => {
+  const query: PPAQuery = {}
+  if (role === 'supplier') {
     query.supplierId = userId;
   } else {
     query.buyerId = userId;
