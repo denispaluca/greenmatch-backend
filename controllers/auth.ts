@@ -11,17 +11,17 @@ const stripe = require('stripe')(process.env.STRIPE_SK);
 
 export const login = async (req: Request, res: Response) => {
   // check if the body of the request contains all necessary properties
-  const { username, password, loginType } = req.body;
+  const { email, password, loginType } = req.body;
   if (!password)
     return res.status(400).json({
       error: "Bad Request",
       message: "The request body must contain a password property",
     });
 
-  if (!username)
+  if (!email)
     return res.status(400).json({
       error: "Bad Request",
-      message: "The request body must contain a username property",
+      message: "The request body must contain a email property",
     });
 
   if (!loginType)
@@ -34,7 +34,7 @@ export const login = async (req: Request, res: Response) => {
   try {
     // if user is found and password is valid
     // create a token
-    const token = await AuthService.login(username, password, loginType);
+    const token = await AuthService.login(email, password, loginType);
     if (!token) {
       return res.status(401).json({
         error: "Unauthorized",
@@ -58,7 +58,7 @@ export const login = async (req: Request, res: Response) => {
 
 export const register = async (req: Request, res: Response) => {
   const {
-    username,
+    email,
     password,
     iban,
     company,
@@ -69,10 +69,10 @@ export const register = async (req: Request, res: Response) => {
       message: "The request body must contain a password property",
     });
 
-  if (!username)
+  if (!email)
     return res.status(400).json({
       error: "Bad Request",
-      message: "The request body must contain a username property",
+      message: "The request body must contain a email property",
     });
 
   if (!iban)
@@ -97,7 +97,7 @@ export const register = async (req: Request, res: Response) => {
 
   // handle the request
   try {
-    const token = await AuthService.register(username, password, iban, company);
+    const token = await AuthService.register(email, password, iban, company);
     // return generated token
     return res.status(200).cookie('token', token, {
       httpOnly: true,

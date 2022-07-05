@@ -1,13 +1,15 @@
 import PowerPlantModel from "../models/powerplant";
-import PPAModel from "../models/ppa"
-import { PPABuy, PPAQuery } from "../types/ppa"
+import PPAModel from "../models/ppa";
+import { PPABuy, PPAQuery } from "../types/ppa";
 import { startOfNextMonth } from "../utils/time";
 import { subscribe } from "../services/stripe";
+import * as MailService from "../services/mailer";
 import dotenv from 'dotenv';
 
 // load stripe
 dotenv.config();
 const stripe = require('stripe')(process.env.STRIPE_SK);
+
 
 export const list = (userId: string, role: 'supplier' | 'buyer', powerplantId?: string) => {
   const query: PPAQuery = {}
@@ -15,27 +17,27 @@ export const list = (userId: string, role: 'supplier' | 'buyer', powerplantId?: 
     query.supplierId = userId;
   } else {
     query.buyerId = userId;
-  };
+  }
 
   if (powerplantId) {
     query.powerplantId = powerplantId;
   }
 
   return PPAModel.find(query).lean();
-}
+};
 
-export const get = (id: string, userId: string, role: 'supplier' | 'buyer') => {
-  const query: PPAQuery = {}
-  if (role === 'supplier') {
+export const get = (id: string, userId: string, role: "supplier" | "buyer") => {
+  const query: PPAQuery = {};
+  if (role === "supplier") {
     query.supplierId = userId;
   } else {
     query.buyerId = userId;
-  };
+  }
   return PPAModel.findOne({
     _id: id,
-    ...query
+    ...query,
   }).lean();
-}
+};
 
 export const cancel = (id: string, supplierId: string) => {
   return PPAModel.findOneAndUpdate(
@@ -44,19 +46,19 @@ export const cancel = (id: string, supplierId: string) => {
       supplierId,
     },
     {
-      canceled: true
+      canceled: true,
     },
     {
-      new: true
+      new: true,
     }
   ).lean();
-}
+};
 
 const durationMap = {
-  5: { 'durations.five': true },
-  10: { 'durations.ten': true },
-  15: { 'durations.fifteen': true }
-}
+  5: { "durations.five": true },
+  10: { "durations.ten": true },
+  15: { "durations.fifteen": true },
+};
 export const buy = async (buyerId: string, buyOrder: PPABuy) => {
   const { powerplantId, amount, duration } = buyOrder;
 
@@ -65,18 +67,18 @@ export const buy = async (buyerId: string, buyOrder: PPABuy) => {
       _id: powerplantId,
       live: true,
       availableCapacity: { $gte: amount },
-      ...durationMap[duration]
+      ...durationMap[duration],
     },
     {
-      $inc: { availableCapacity: -amount }
+      $inc: { availableCapacity: -amount },
     },
     {
-      new: true
+      new: true,
     }
   ).lean();
 
   if (!powerplant) {
-    throw Error('Could update the Power Plant');
+    throw Error("Could update the Power Plant");
   }
 
   // stripe: create product
@@ -104,6 +106,6 @@ export const buy = async (buyerId: string, buyOrder: PPABuy) => {
   // stripe: create subscription
   subscribe(ppa);
 
+  MailService.sendPpaAcknowledgement(buyerId, powerplant, buyOrder);
   return ppa.toObject();
-}
-
+};
