@@ -46,7 +46,6 @@ export const create: RequestHandler = async (req: RequestWithUserId, res) => {
 }
 
 export const list: RequestHandler = async (req: RequestWithUserId, res) => {
-  console.log("hello");
   if (!req.role || req.role !== 'supplier' || !req.userId) {
     return res.status(401).json({
       error: 'Wrong Auth',
