@@ -1,5 +1,6 @@
 import type { Request, Response } from "express";
 import * as UserService from '../services/username';
+import * as MailService from '../services/mailer';
 
 
 export const checkAvailability = async (req: Request, res: Response) => {
