@@ -10,7 +10,7 @@ const ppaAckHtml = (powerplant: any, ppaBuy : PPABuy) => {
         <h2>Congratulations!</h2>
         <img src="cid:checkmark" style="width:48px;height:48px;" alt="Checkmark">
         <h5> You have successfully concluded a PPA with ${powerplant.name}</h5>
-        <h5>Your PPA Properties</h5>
+        <h5>Your PPA's Properties</h5>
         <table>
             <tr>
                 <td>Powerplant</td>
