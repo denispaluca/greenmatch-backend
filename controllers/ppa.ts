@@ -40,11 +40,7 @@ export const buy: RequestHandler = async (req: RequestWithUserId, res) => {
     });
   }
 
-<<<<<<< HEAD
-  if (role !== 'buyer') {
-=======
   if (role !== "buyer") {
->>>>>>> master
     return res.status(401).json({
       error: "Unauthorized",
       message: "User is not a buyer",

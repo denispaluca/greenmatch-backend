@@ -4,7 +4,7 @@ import { PPABuy } from "../types/ppa";
 
 const nodemailer = require("nodemailer");
 
-const ppaAckHtml = (powerplant: any, ppaBuy : PPABuy) => {
+const ppaAckHtml = (powerplant: any, ppaBuy: PPABuy) => {
   return `
     <center>
         <h2>Congratulations!</h2>
@@ -72,7 +72,7 @@ export const sendPpaAcknowledgement = async (
 
   // ToDo Set Username to email prop after branch merges
   const ackMail: mailConfigurations = {
-    to: buyer.username,
+    to: buyer.email,
     subject: `GreenMatch - Successfully PPA Conclusion with ${powerplant.name}`,
     html: ppaAckHtml(powerplant, ppaBuy),
     attachments: [
