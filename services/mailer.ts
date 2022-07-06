@@ -72,7 +72,7 @@ export const sendPpaAcknowledgement = async (
 
   // ToDo Set Username to email prop after branch merges
   const ackMail: mailConfigurations = {
-    to: buyer.username,
+    to: buyer.email,
     subject: `GreenMatch - Successfully PPA Conclusion with ${powerplant.name}`,
     html: ppaAckHtml(powerplant, ppaBuy),
     attachments: [
