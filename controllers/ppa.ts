@@ -47,7 +47,7 @@ export const buy: RequestHandler = async (req: RequestWithUserId, res) => {
     });
   }
 
-  const { powerplantId, duration, amount } = req.body;
+  const { powerplantId, duration, amount, stripePaymentMethod } = req.body;
   const dur = parseSingleDuration(duration);
   if (!dur) {
     return BadRequest.bodyPropertyMissing(res, "duration");
@@ -59,6 +59,10 @@ export const buy: RequestHandler = async (req: RequestWithUserId, res) => {
 
   if (!powerplantId) {
     return BadRequest.bodyPropertyMissing(res, "power plant id");
+  }
+
+  if (!stripePaymentMethod) {
+    return BadRequest.bodyPropertyMissing(res, 'stripe payment method id');
   }
 
   try {

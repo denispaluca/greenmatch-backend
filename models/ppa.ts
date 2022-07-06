@@ -47,6 +47,14 @@ const PPASchema = new mongoose.Schema<PPA>({
   canceled: {
     type: Boolean,
     default: false
+  },
+  stripePriceId: {
+    type: String,
+    immutable: true
+  },
+  stripePaymentMethod: {
+    type: String,
+    immutable: true
   }
 });
 
