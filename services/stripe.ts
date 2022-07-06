@@ -29,5 +29,5 @@ export const subscribe = async (ppa: any) => {
         default_payment_method: ppa.stripePaymentMethod,
     });
 
-    console.log(subscription.id);
+    return subscription;
 };
