@@ -38,7 +38,7 @@ export const login = async (req: Request, res: Response) => {
     if (!token) {
       return res.status(401).json({
         error: "Unauthorized",
-        message: "Invalid username or password",
+        message: "Invalid email or password",
       });
     }
     return res.status(200).cookie('token', token, {
@@ -46,7 +46,7 @@ export const login = async (req: Request, res: Response) => {
       maxAge: 1000 * 60 * 60 * 24,
       path: '/',
       sameSite: 'strict',
-    }).send("Successfull login.")
+    }).send("Successful login.")
 
   } catch (err: any) {
     return res.status(404).json({
@@ -104,7 +104,7 @@ export const register = async (req: Request, res: Response) => {
       maxAge: 1000 * 60 * 60 * 24,
       path: '/',
       sameSite: 'strict',
-    }).send("Successfull registration.")
+    }).send("Successful registration.")
   } catch (err: any) {
     if (err.code == 11000) {
       return res.status(400).json({

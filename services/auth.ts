@@ -8,7 +8,8 @@ import dotenv from 'dotenv';
 dotenv.config();
 const stripe = require('stripe')(process.env.STRIPE_SK);
 
-export const login = async (email: string,
+export const login = async (
+  email: string,
   password: string,
   loginType: string): Promise<string | null> => {
   // get the user form the database
@@ -30,7 +31,7 @@ export const login = async (email: string,
 
 
   const token = jwt.sign(
-    { _id: user._id, username: user.email, role: user.role },
+    { _id: user._id, email: user.email, role: user.role },
     process.env.JWT_SECRET || "secret",
     {
       expiresIn: 86400, // expires in 24 hours
@@ -73,7 +74,7 @@ export const register = async (
   const token = jwt.sign(
     {
       _id: retUser._id,
-      username: retUser.email,
+      email: retUser.email,
       role: retUser.role,
     },
     process.env.JWT_SECRET || "secret",
