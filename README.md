@@ -5,6 +5,7 @@ api/
 >>POST login  
 >>POST register  
 >>GET me
+>>GET setupIntent
 
 >GET username/:id --> if user exists return true else false
 

@@ -4,7 +4,7 @@ import { PPABuy } from "../types/ppa";
 
 const nodemailer = require("nodemailer");
 
-const ppaAckHtml = (powerplant: any, ppaBuy : PPABuy) => {
+const ppaAckHtml = (powerplant: any, ppaBuy: PPABuy) => {
   return `
     <center>
         <h2>Congratulations!</h2>

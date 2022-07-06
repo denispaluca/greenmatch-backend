@@ -1,19 +1,19 @@
 import type { Request, Response } from "express";
-import * as UserService from '../services/username';
+import * as UserService from '../services/email';
 import * as MailService from '../services/mailer';
 
 
 export const checkAvailability = async (req: Request, res: Response) => {
 
-    const email = req.params.id
+  const email = req.params.id
 
-    if (!email)
+  if (!email)
     return res.status(400).json({
       error: "Bad Request",
       message: "URL has to contain email",
     });
-  
-    try {
+
+  try {
     // filter for email in userdb
     const result = await UserService.checkUser(email)
     return res.status(200).json({

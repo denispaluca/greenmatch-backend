@@ -10,6 +10,7 @@ export interface PPABuy {
   powerplantId: string;
   duration: SingleDuration;
   amount: number;
+  stripePaymentMethod: string;
 }
 
 /**
@@ -19,4 +20,5 @@ export interface PPA extends Required<PPAQuery>, PPABuy {
   price: number;
   startDate: Date;
   canceled: boolean;
+  stripePriceId: string;
 }
