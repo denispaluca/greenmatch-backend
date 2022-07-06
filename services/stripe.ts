@@ -18,7 +18,7 @@ export const subscribe = async (ppa: any) => {
     const anchorUnix: string = String(ppa.startDate.getTime() / 1000);
     const cancelAtUnix: string = String(getEndDate(ppa.duration).getTime() / 1000);
 
-    await stripe.subscriptions.create({
+    const subscription = await stripe.subscriptions.create({
         customer: buyer!.stripeCustId,
         items: [{ price: ppa.stripePriceId }],
         payment_behavior: 'default_incomplete',
@@ -28,4 +28,6 @@ export const subscribe = async (ppa: any) => {
         proration_behavior: 'none',
         default_payment_method: ppa.stripePaymentMethod,
     });
+
+    console.log(subscription.id);
 };
