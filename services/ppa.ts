@@ -118,7 +118,8 @@ export const buy = async (buyerId: string, buyOrder: PPABuy) => {
     price: powerplant.price,
     startDate: startOfNextMonth(),
     stripePriceId: price.id,
-    stripeSubscriptionId: subscription.id
+    stripeSubscriptionId: subscription.id,
+    contractURL: 'https://drive.google.com/file/u/0/d/1pSi-MikNLUk84_WYVNEL3nV6ChzbiNWW/preview',
   });
 
   // MailService.sendPpaAcknowledgement(buyerId, powerplant, buyOrder);
