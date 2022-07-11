@@ -106,6 +106,7 @@ export const buy = async (buyerId: string, buyOrder: PPABuy) => {
   // stripe: create subscription
   subscribe(ppa);
 
-  MailService.sendPpaAcknowledgement(buyerId, powerplant, buyOrder);
+  //Prevent Spammming during testing -> Remove for Demo!!
+  //MailService.sendPpaAcknowledgement(buyerId, powerplant, buyOrder);
   return ppa.toObject();
 };
