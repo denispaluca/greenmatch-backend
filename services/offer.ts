@@ -18,40 +18,7 @@ const lookupPipeline: PipelineStage[] = [
           $project: {
             supplierName: "$company.name",
             supplierWebsite: "$company.website",
-            supplierImageUrl: "$company.imageUrl",
-          },
-        },
-      ],
-    },
-  },
-  {
-    $replaceRoot: {
-      newRoot: {
-        $mergeObjects: [{ $arrayElemAt: ["$fromSupplier", 0] }, "$$ROOT"],
-      },
-    },
-  },
-  { $project: { fromSupplier: 0 } },
-];
-
-const oldlookupPipeline: PipelineStage[] = [
-  {
-    $lookup: {
-      from: UserModel.collection.name,
-      as: "fromSupplier",
-      //localField: "supplierId",
-      //foreignField: "_id",
-      //let: { "searchId": { $toObjectId: "$supplierId" } },
-      let: { searchId: "$supplierId" },
-      pipeline: [
-        { $addFields: { searchId: { $toObjectId: "$searchId" } } },
-        { $match: { $expr: { $eq: ["$_id", "$$searchId"] } } },
-        // { $match: { "$expr": [{ "_id": "$$searchId" }] } },
-        {
-          $project: {
-            supplierName: "$company.name",
-            supplierWebsite: "$company.website",
-            supplierImageUrl: "$company.imageUrl",
+            supplierImageUrl: "$company.imageURL",
           },
         },
       ],
