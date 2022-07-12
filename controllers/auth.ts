@@ -165,5 +165,5 @@ export const setupIntent = async (req: RequestWithUserId, res: Response) => {
 };
 
 export const logout = (req: Request, res: Response) => {
-  return res.clearCookie('token').status(200).send("Successfull logout.")
+  return res.clearCookie('token').status(200).send("Successful logout.")
 };
