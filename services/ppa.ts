@@ -55,6 +55,10 @@ export const cancel = async (id: string, supplierId: string) => {
 
 
   if (canceledPPA) {
+    await stripe.subscriptions.del(
+      canceledPPA.stripeSubscriptionId
+    );
+
     await PowerPlantModel.findOneAndUpdate(
       {
         _id: canceledPPA.powerplantId,
@@ -108,6 +112,17 @@ export const buy = async (buyerId: string, buyOrder: PPABuy) => {
     product: product.id,
   });
 
+  const params = {
+    buyerId: buyerId,
+    stripePriceId: price.id,
+    startDate: startOfNextMonth(),
+    duration: duration,
+    stripePaymentMethod: buyOrder.stripePaymentMethod
+  }
+
+  // stripe: create subscription
+  const subscription = await subscribe(params);
+
   const ppa = await PPAModel.create({
     buyerId,
     ...buyOrder,
@@ -115,11 +130,10 @@ export const buy = async (buyerId: string, buyOrder: PPABuy) => {
     price: powerplant.price,
     startDate: startOfNextMonth(),
     stripePriceId: price.id,
+    stripeSubscriptionId: subscription.id,
+    contractURL: 'https://drive.google.com/file/u/0/d/1pSi-MikNLUk84_WYVNEL3nV6ChzbiNWW/preview',
   });
 
-  // stripe: create subscription
-  subscribe(ppa);
-
-  MailService.sendPpaAcknowledgement(buyerId, powerplant, buyOrder);
+  // MailService.sendPpaAcknowledgement(buyerId, powerplant, buyOrder);
   return ppa.toObject();
 };

@@ -55,6 +55,14 @@ const PPASchema = new mongoose.Schema<PPA>({
   stripePaymentMethod: {
     type: String,
     immutable: true
+  },
+  stripeSubscriptionId: {
+    type: String,
+    immutable: true
+  },
+  contractURL: {
+    type: String,
+    required: true
   }
 });
 
