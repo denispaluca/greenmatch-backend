@@ -39,8 +39,8 @@ export const get = (id: string, userId: string, role: "supplier" | "buyer") => {
   }).lean();
 };
 
-export const cancel = (id: string, supplierId: string) => {
-  return PPAModel.findOneAndUpdate(
+export const cancel = async (id: string, supplierId: string) => {
+  const canceledPPA = await PPAModel.findOneAndUpdate(
     {
       _id: id,
       supplierId,
@@ -52,6 +52,20 @@ export const cancel = (id: string, supplierId: string) => {
       new: true,
     }
   ).lean();
+
+
+  if (canceledPPA) {
+    await PowerPlantModel.findOneAndUpdate(
+      {
+        _id: canceledPPA.powerplantId,
+        supplierId: supplierId
+      },
+      {
+        $inc: { availableCapacity: canceledPPA.amount }
+      });
+  }
+
+  return canceledPPA;
 };
 
 const durationMap = {
