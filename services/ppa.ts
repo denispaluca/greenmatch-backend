@@ -40,13 +40,7 @@ export const get = (id: string, userId: string, role: "supplier" | "buyer") => {
 };
 
 export const cancel = async (id: string, supplierId: string) => {
-  // cancel subscription on stripe
-  const ppa = await PPAModel.findOne({ "_id": id }).lean()
-  await stripe.subscriptions.del(
-    ppa?.stripeSubscriptionId
-  );
-
-  return PPAModel.findOneAndUpdate(
+  const canceledPPA = await PPAModel.findOneAndUpdate(
     {
       _id: id,
       supplierId,
@@ -58,6 +52,24 @@ export const cancel = async (id: string, supplierId: string) => {
       new: true,
     }
   ).lean();
+
+
+  if (canceledPPA) {
+    await stripe.subscriptions.del(
+      canceledPPA.stripeSubscriptionId
+    );
+
+    await PowerPlantModel.findOneAndUpdate(
+      {
+        _id: canceledPPA.powerplantId,
+        supplierId: supplierId
+      },
+      {
+        $inc: { availableCapacity: canceledPPA.amount }
+      });
+  }
+
+  return canceledPPA;
 };
 
 const durationMap = {
