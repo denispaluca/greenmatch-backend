@@ -6,35 +6,74 @@ import type { Offer, OfferQuery } from "../types/offer";
 import { EnergyType } from "../types/powerplant";
 
 const lookupPipeline: PipelineStage[] = [
+  { $addFields: { obId: { $toObjectId: "$supplierId" } } },
+  {
+    $lookup: {
+      from: UserModel.collection.name,
+      localField: "obId",
+      foreignField: "_id",
+      as: "fromSupplier",
+      pipeline: [
+        {
+          $project: {
+            supplierName: "$company.name",
+            supplierWebsite: "$company.website",
+            supplierImageUrl: "$company.imageUrl",
+          },
+        },
+      ],
+    },
+  },
+  {
+    $replaceRoot: {
+      newRoot: {
+        $mergeObjects: [{ $arrayElemAt: ["$fromSupplier", 0] }, "$$ROOT"],
+      },
+    },
+  },
+  { $project: { fromSupplier: 0 } },
+];
+
+const oldlookupPipeline: PipelineStage[] = [
   {
     $lookup: {
       from: UserModel.collection.name,
       as: "fromSupplier",
-      let: { "searchId": { $toObjectId: "$supplierId" } },
+      //localField: "supplierId",
+      //foreignField: "_id",
+      //let: { "searchId": { $toObjectId: "$supplierId" } },
+      let: { searchId: "$supplierId" },
       pipeline: [
-        { $match: { "$expr": [{ "_id": "$$searchId" }] } },
+        { $addFields: { searchId: { $toObjectId: "$searchId" } } },
+        { $match: { $expr: { $eq: ["$_id", "$$searchId"] } } },
+        // { $match: { "$expr": [{ "_id": "$$searchId" }] } },
         {
           $project: {
-            supplierName: '$company.name',
-            supplierWebsite: '$company.website',
-            supplierImageUrl: '$company.imageUrl'
-          }
-        }
-      ]
-    }
+            supplierName: "$company.name",
+            supplierWebsite: "$company.website",
+            supplierImageUrl: "$company.imageUrl",
+          },
+        },
+      ],
+    },
   },
   {
-    $replaceRoot: { newRoot: { $mergeObjects: [{ $arrayElemAt: ["$fromSupplier", 0] }, "$$ROOT"] } }
+    $replaceRoot: {
+      newRoot: {
+        $mergeObjects: [{ $arrayElemAt: ["$fromSupplier", 0] }, "$$ROOT"],
+      },
+    },
   },
-  { $project: { fromSupplier: 0 } }
-]
+  { $project: { fromSupplier: 0 } },
+];
 
 export const list = async (query: OfferQuery) => {
-  const { duration, energyTypes, availableCapacity, priceEnd, priceStart } = query;
+  const { duration, energyTypes, availableCapacity, priceEnd, priceStart } =
+    query;
   const matchExtra: any = {};
 
   if (energyTypes) {
-    const orClauses = []
+    const orClauses = [];
     if (energyTypes.wind) orClauses.push({ energyType: EnergyType.Wind });
     if (energyTypes.hydro) orClauses.push({ energyType: EnergyType.Hydro });
     if (energyTypes.solar) orClauses.push({ energyType: EnergyType.Solar });
@@ -43,7 +82,7 @@ export const list = async (query: OfferQuery) => {
   }
 
   if (availableCapacity) {
-    matchExtra.availableCapacity = { $gte: availableCapacity }
+    matchExtra.availableCapacity = { $gte: availableCapacity };
   }
 
   const priceClause: any = {};
@@ -77,25 +116,25 @@ export const list = async (query: OfferQuery) => {
     {
       $match: {
         live: true,
-        ...matchExtra
-      }
+        ...matchExtra,
+      },
     },
     ...lookupPipeline
   ]);
 
   return offers;
-}
+};
 
 export const get = async (id: string) => {
   const offer: Offer[] = await PowerPlantModel.aggregate([
     {
       $match: {
         _id: new mongoose.Types.ObjectId(id),
-        live: true
-      }
+        live: true,
+      },
     },
-    ...lookupPipeline
+    ...lookupPipeline,
   ]);
 
   return offer[0];
-}
+};
