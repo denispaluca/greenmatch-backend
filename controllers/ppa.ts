@@ -113,7 +113,8 @@ export const cancel: RequestHandler = async (req: RequestWithUserId, res) => {
   }
 
   try {
-    await PPAService.cancel(req.params.id, req.userId);
+    const ppa = await PPAService.cancel(req.params.id, req.userId);
+    res.status(200).json(ppa);
   } catch (err: any) {
     return res.status(500).json({
       error: "Internal Server Error",
