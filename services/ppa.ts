@@ -134,9 +134,6 @@ export const buy = async (buyerId: string, buyOrder: PPABuy) => {
     contractURL: 'https://drive.google.com/file/u/0/d/1pSi-MikNLUk84_WYVNEL3nV6ChzbiNWW/preview',
   });
 
-  // stripe: create subscription
-  subscribe(ppa);
-
   //Prevent Spammming during testing -> Remove for Demo!!
   //MailService.sendPpaAcknowledgement(buyerId, powerplant, buyOrder);
   return ppa.toObject();
