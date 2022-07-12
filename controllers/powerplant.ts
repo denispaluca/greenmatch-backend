@@ -1,18 +1,22 @@
 import { RequestHandler } from "express";
-import * as PowerPlantService from '../services/powerplant';
-import * as BadRequest from '../errors/badRequest';
+import * as PowerPlantService from "../services/powerplant";
+import * as BadRequest from "../errors/badRequest";
 import { PowerPlantCreate } from "../types/powerplant";
 import { RequestWithUserId } from "../types/auth";
 
 export const create: RequestHandler = async (req: RequestWithUserId, res) => {
-  if (!req.role || req.role !== 'supplier' || !req.userId) {
+  if (!req.role || req.role !== "supplier" || !req.userId) {
     return res.status(401).json({
-      error: 'Wrong Auth',
-      message: 'User is not supplier'
-    })
+      error: "Wrong Auth",
+      message: "User is not supplier",
+    });
   }
 
-  const requiredProperties: (keyof PowerPlantCreate)[] = ['location', 'energyType', 'name'];
+  const requiredProperties: (keyof PowerPlantCreate)[] = [
+    "location",
+    "energyType",
+    "name",
+  ];
 
   for (const prop of requiredProperties)
     if (!req.body[prop]) return BadRequest.bodyPropertyMissing(res, prop);
@@ -24,7 +28,7 @@ export const create: RequestHandler = async (req: RequestWithUserId, res) => {
       {
         location,
         energyType,
-        name
+        name,
       },
       req.userId
     );
@@ -43,14 +47,14 @@ export const create: RequestHandler = async (req: RequestWithUserId, res) => {
       message: err?.message,
     });
   }
-}
+};
 
 export const list: RequestHandler = async (req: RequestWithUserId, res) => {
-  if (!req.role || req.role !== 'supplier' || !req.userId) {
+  if (!req.role || req.role !== "supplier" || !req.userId) {
     return res.status(401).json({
-      error: 'Wrong Auth',
-      message: 'User is not supplier'
-    })
+      error: "Wrong Auth",
+      message: "User is not supplier",
+    });
   }
   try {
     const powerplants = await PowerPlantService.list(req.userId);
@@ -61,14 +65,14 @@ export const list: RequestHandler = async (req: RequestWithUserId, res) => {
       message: err?.message,
     });
   }
-}
+};
 
 export const get: RequestHandler = async (req: RequestWithUserId, res) => {
-  if (!req.role || req.role !== 'supplier' || !req.userId) {
+  if (!req.role || req.role !== "supplier" || !req.userId) {
     return res.status(401).json({
-      error: 'Wrong Auth',
-      message: 'User is not supplier'
-    })
+      error: "Wrong Auth",
+      message: "User is not supplier",
+    });
   }
 
   const { id } = req.params;
@@ -91,20 +95,24 @@ export const get: RequestHandler = async (req: RequestWithUserId, res) => {
       message: err?.message,
     });
   }
-}
+};
 
 export const update: RequestHandler = async (req: RequestWithUserId, res) => {
-  if (!req.role || req.role !== 'supplier' || !req.userId) {
+  if (!req.role || req.role !== "supplier" || !req.userId) {
     return res.status(401).json({
-      error: 'Wrong Auth',
-      message: 'User is not supplier'
-    })
+      error: "Wrong Auth",
+      message: "User is not supplier",
+    });
   }
 
   const { id } = req.params;
   const update = req.body;
   try {
-    const updatedPowerPlant = await PowerPlantService.update(id, req.userId, update);
+    const updatedPowerPlant = await PowerPlantService.update(
+      id,
+      req.userId,
+      update
+    );
     if (!updatedPowerPlant) {
       return res.status(404).json({
         error: "Powerplant Not Found",
@@ -119,16 +127,14 @@ export const update: RequestHandler = async (req: RequestWithUserId, res) => {
       message: err?.message,
     });
   }
-}
-
-
+};
 
 export const remove: RequestHandler = async (req: RequestWithUserId, res) => {
-  if (!req.role || req.role !== 'supplier' || !req.userId) {
+  if (!req.role || req.role !== "supplier" || !req.userId) {
     return res.status(401).json({
-      error: 'Wrong Auth',
-      message: 'User is not supplier'
-    })
+      error: "Wrong Auth",
+      message: "User is not supplier",
+    });
   }
 
   const { id } = req.params;
@@ -147,4 +153,4 @@ export const remove: RequestHandler = async (req: RequestWithUserId, res) => {
       message: err?.message,
     });
   }
-}
+};

@@ -60,7 +60,7 @@ export const register = async (
   const user = {
     email: email,
     password: hashedPassword,
-    role: "buyer",
+    role: "supplier",
     company: company,
     iban: iban,
     stripeCustId: customer.id
