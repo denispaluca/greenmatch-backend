@@ -4,6 +4,7 @@ import { PPABuy, PPAQuery } from "../types/ppa";
 import { startOfNextMonth } from "../utils/time";
 import { subscribe } from "../services/stripe";
 import * as MailService from "../services/mailer";
+import * as NotificationService from "../services/notification";
 import dotenv from 'dotenv';
 
 // load stripe
@@ -53,7 +54,6 @@ export const cancel = async (id: string, supplierId: string) => {
     }
   ).lean();
 
-
   if (canceledPPA) {
     await stripe.subscriptions.del(
       canceledPPA.stripeSubscriptionId
@@ -67,6 +67,8 @@ export const cancel = async (id: string, supplierId: string) => {
       {
         $inc: { availableCapacity: canceledPPA.amount }
       });
+
+    await NotificationService.create(canceledPPA);
   }
 
   return canceledPPA;
