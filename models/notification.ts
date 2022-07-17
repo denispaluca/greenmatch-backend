@@ -40,6 +40,6 @@ const NotificationSchema = new mongoose.Schema<Notification>({
 NotificationSchema.set("versionKey", false);
 
 // Export the User model
-const NotificationModel = mongoose.model("User", NotificationSchema);
+const NotificationModel = mongoose.model("Notification", NotificationSchema);
 
 export default NotificationModel;
