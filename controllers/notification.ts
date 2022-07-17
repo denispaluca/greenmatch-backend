@@ -2,7 +2,7 @@ import type { RequestHandler } from "express";
 import type { RequestWithUserId } from "../types/auth";
 import * as NotificationService from "../services/notification";
 
-export const list: RequestHandler = (req: RequestWithUserId, res) => {
+export const list: RequestHandler = async (req: RequestWithUserId, res) => {
   if (req.role !== 'buyer' || !req.userId) {
     return res.status(401).json({
       error: 'Unauthorized',
@@ -11,7 +11,7 @@ export const list: RequestHandler = (req: RequestWithUserId, res) => {
   }
 
   try {
-    const notifications = NotificationService.list(req.userId);
+    const notifications = await NotificationService.list(req.userId);
     return res.status(200).json(notifications);
   } catch (error: any) {
     return res.status(500).json({
@@ -22,7 +22,7 @@ export const list: RequestHandler = (req: RequestWithUserId, res) => {
 }
 
 
-export const read: RequestHandler = (req: RequestWithUserId, res) => {
+export const read: RequestHandler = async (req: RequestWithUserId, res) => {
   if (req.role !== 'buyer' || !req.userId) {
     return res.status(401).json({
       error: 'Unauthorized',
@@ -31,7 +31,7 @@ export const read: RequestHandler = (req: RequestWithUserId, res) => {
   }
 
   try {
-    const notification = NotificationService.read(req.userId, req.params.id);
+    const notification = await NotificationService.read(req.userId, req.params.id);
     return res.status(200).json(notification);
   } catch (error: any) {
     return res.status(500).json({
