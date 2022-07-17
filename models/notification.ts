@@ -1,12 +1,5 @@
 import * as mongoose from 'mongoose';
-
-interface Notification {
-  supplierName: string;
-  ppaId: string;
-  buyerId: string;
-  cancellationDate: Date;
-  read: boolean;
-}
+import type { Notification } from '../types/notification';
 
 // Define the user schema
 const NotificationSchema = new mongoose.Schema<Notification>({

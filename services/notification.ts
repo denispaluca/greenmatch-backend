@@ -2,6 +2,7 @@ import UserModel from "../models/user";
 import NotificationModel from "../models/notification";
 import type { PPA } from "../types/ppa";
 import { Types } from "mongoose";
+import { emitNotification } from "./socket";
 
 export const list = async (userId: string) => {
   const notifications = await NotificationModel.find({
@@ -24,7 +25,9 @@ export const create = async (ppa: PPA & { _id: Types.ObjectId; }) => {
     cancellationDate: new Date(),
   });
 
-  return notification.toObject();
+  const notificationObject = notification.toObject();
+  emitNotification(ppa.buyerId, notificationObject);
+  return notificationObject;
 }
 
 export const read = async (userId: string, notificationId: string) => {
