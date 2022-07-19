@@ -56,6 +56,10 @@ export const register = async (
     'name': company.name,
   });
 
+  if (customer.error) {
+    throw Error("Could not create customer on the Stripe platform");
+  }
+
   // create a user object
   const user = {
     email: email,
