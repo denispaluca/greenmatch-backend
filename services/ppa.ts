@@ -104,6 +104,10 @@ export const buy = async (buyerId: string, buyOrder: PPABuy) => {
     name: 'PPA BuyerID: ' + buyerId,
   });
 
+  if (product.error) {
+    throw Error("Could not create product on the Stripe platform");
+  }
+
   // stripe: create price and bind it to product
   const price = await stripe.prices.create({
     unit_amount: Math.ceil((powerplant.price * amount * duration) / (12 * duration)),
@@ -111,6 +115,10 @@ export const buy = async (buyerId: string, buyOrder: PPABuy) => {
     recurring: { interval: 'month' },
     product: product.id,
   });
+
+  if (price.error) {
+    throw Error("Could not bind price to product on the Stripe platform");
+  }
 
   const params = {
     buyerId: buyerId,
@@ -122,6 +130,10 @@ export const buy = async (buyerId: string, buyOrder: PPABuy) => {
 
   // stripe: create subscription
   const subscription = await subscribe(params);
+
+  if (subscription.error) {
+    throw Error("Could create subscription on the Stripe platform");
+  }
 
   const ppa = await PPAModel.create({
     buyerId,
