@@ -6,6 +6,7 @@ import type { Offer, OfferQuery } from "../types/offer";
 import { EnergyType } from "../types/powerplant";
 
 const lookupPipeline: PipelineStage[] = [
+  { $match: { availableCapacity: { $gt: 0 } } },
   { $addFields: { obId: { $toObjectId: "$supplierId" } } },
   {
     $lookup: {
