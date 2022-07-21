@@ -149,6 +149,6 @@ export const buy = async (buyerId: string, buyOrder: PPABuy) => {
   });
 
   //Prevent Spammming during testing -> Remove for Demo!!
-  //MailService.sendPpaAcknowledgement(buyerId, powerplant, buyOrder);
+  MailService.sendPpaAcknowledgement(buyerId, powerplant, buyOrder);
   return ppa.toObject();
 };

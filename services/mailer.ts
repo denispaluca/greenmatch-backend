@@ -47,12 +47,14 @@ export const sendMail = async (mailData: mailConfigurations) => {
     port: 587,
     auth: {
       user: "ppa.greenmatch@outlook.de",
-      pass: "fhckwtkjwdjdwbeg",
+      pass: "rannyatzsoaefkwt",
     },
   });
 
   transporter.sendMail(email, function (error: any, info: any) {
-    if (error) throw Error(error);
+    if (error){
+      console.log("Unable to send Email", error)
+    };
     console.log("Email Sent Successfully");
     console.log(info);
   });
@@ -73,7 +75,7 @@ export const sendPpaAcknowledgement = async (
   // ToDo Set Username to email prop after branch merges
   const ackMail: mailConfigurations = {
     to: buyer.email,
-    subject: `GreenMatch - Successfully PPA Conclusion with ${powerplant.name}`,
+    subject: `GreenMatch - Successful PPA Conclusion with ${powerplant.name}`,
     html: ppaAckHtml(powerplant, ppaBuy),
     attachments: [
       {
