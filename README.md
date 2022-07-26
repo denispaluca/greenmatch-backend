@@ -13,6 +13,8 @@ This is the backend of the GreenMatch system.
 ## Running the project
 1. Install all the project dependencies: ```npm install```
 2. Run the project: ```npm start```
+3. Supplier login: email ```hello@gruenstrom.de``` password ```123```
+4. Buyer login: email ```energiesucher@yahoo.com``` password ```123```
 
 ## Credentials
 - MongoDB Atlas: email ```energiesucher@yahoo.com``` password ```B4T#Ly3zM!86```
