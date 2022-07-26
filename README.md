@@ -26,9 +26,9 @@ This is the backend of the GreenMatch system.
 api/  
 >auth/  
 >>POST login  
->>POST register
->>GET logout
->>GET setupIntent --> returns Stripe client secret to set up payment method for future payments
+>>POST register  
+>>GET logout  
+>>GET setupIntent --> returns Stripe client secret to set up payment method for future payments  
 
 >GET email/:id --> if user exists return true else false
 
