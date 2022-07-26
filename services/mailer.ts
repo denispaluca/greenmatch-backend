@@ -47,7 +47,7 @@ export const sendMail = async (mailData: mailConfigurations) => {
     port: 587,
     auth: {
       user: "ppa.greenmatch@outlook.de",
-      pass: "rannyatzsoaefkwt",
+      pass: process.env.MAIL_SK,
     },
   });
 
