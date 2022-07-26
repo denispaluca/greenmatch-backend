@@ -26,9 +26,9 @@ This is the backend of the GreenMatch system.
 api/  
 >auth/  
 >>POST login  
->>POST register  
+>>POST register
 >>GET logout
->>GET setupIntent --> Returns stripe id to be used for subscription.
+>>GET setupIntent --> returns Stripe client secret to set up payment method for future payments
 
 >GET email/:id --> if user exists return true else false
 
@@ -43,4 +43,4 @@ api/
 >>PATCH :id --> only for supplier, cancles PPA
 
 >GET notifications/
->>PATCH :id --> Mark notification as read
+>>PATCH :id --> mark notification as read
