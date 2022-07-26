@@ -15,8 +15,8 @@ This is the backend of the Green Match system.
 2. Run the project: ```npm start```
 
 ## Credentials
-- 
-
+- MongoDB Atlas: email ```energiesucher@yahoo.com``` password ```B4T#Ly3zM!86```
+- Stripe: email ```energiesucher@yahoo.com``` password ```B4T#Ly3zM!86```
 
 ## API SCHEMA
 
