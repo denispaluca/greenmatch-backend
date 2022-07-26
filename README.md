@@ -1,5 +1,5 @@
 # GreenMatch BackEnd.
-This is the backend of the Green Match system.
+This is the backend of the GreenMatch system.
 
 ## Prerequisites
 - [node](https://nodejs.org/en/): v18.6.0
