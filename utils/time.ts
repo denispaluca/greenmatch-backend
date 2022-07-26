@@ -1,6 +1,7 @@
 export const startOfNextMonth = (): Date => {
   const date = new Date();
-  return new Date(date.getFullYear(), date.getMonth() + 1, 1);
+  const a = new Date(Date.UTC(date.getFullYear(), date.getMonth() + 1, 1))
+  return a;
 }
 
 export const getEndDate = (duration: number): Date => {
