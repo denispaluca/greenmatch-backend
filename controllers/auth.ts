@@ -140,6 +140,11 @@ export const me = async (req: RequestWithUserId, res: Response) => {
   }
 };
 
+/* 
+* A SetupIntent guides you through the process of setting up and saving a customer's payment credentials for future payments. 
+* For example, you could use a SetupIntent to set up and save your customer's card without immediately collecting a payment. 
+* Later, you can use PaymentIntents to drive the payment flow. 
+*/
 export const setupIntent = async (req: RequestWithUserId, res: Response) => {
   try {
     // get own user name from database

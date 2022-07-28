@@ -98,7 +98,7 @@ export const buy = async (buyerId: string, buyOrder: PPABuy) => {
   ).lean();
 
   if (!powerplant) {
-    throw Error("Could update the Power Plant");
+    throw Error("Could not update the Power Plant");
   }
 
   // stripe: create product
@@ -110,7 +110,10 @@ export const buy = async (buyerId: string, buyOrder: PPABuy) => {
     throw Error("Could not create product on the Stripe platform");
   }
 
-  // stripe: create price and bind it to product
+  /*
+  * stripe: create price and bind it to product
+  * unit_amount: monthly amount in cents
+  */
   const price = await stripe.prices.create({
     unit_amount: Math.ceil((powerplant.price * amount * duration) / (12 * duration)),
     currency: 'eur',
@@ -134,7 +137,7 @@ export const buy = async (buyerId: string, buyOrder: PPABuy) => {
   const subscription = await subscribe(params);
 
   if (subscription.error) {
-    throw Error("Could create subscription on the Stripe platform");
+    throw Error("Could not create subscription on the Stripe platform");
   }
 
   const ppa = await PPAModel.create({
